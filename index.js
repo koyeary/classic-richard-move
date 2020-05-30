@@ -2,7 +2,7 @@ const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
 
-let answerArr = [];
+let answersArr = [];
 
 inquirer
   .prompt([
@@ -52,9 +52,16 @@ inquirer
   } 
 ])
   .then(answers => {
-    console.log(answers.username + ", " + answers.title);
-    answerArr.push(answers);
-    console.log(answerArr);
+    console.log(answers);
+    let answersStr = JSON.stringify(answers);
+
+    fs.writeFile("test.txt", answersStr, function(err) {
+      if (err) {
+        console.log("Whoops, something went wrong!");
+      } else {
+        console.log(`Wrote ${answersStr.length} items`);
+      }
+    })
   }
   );
     
