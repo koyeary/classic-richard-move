@@ -1,9 +1,12 @@
-const fs = require("fs");
-const axios = require("axios");
-const inquirer = require("inquirer");
+const fs = require('fs');
+//const axios = require('axios');
+const inquirer = require('inquirer');
+const util = require('util');
 
+const writeFileAsync = util.promisify(fs.writeFile);
 
-inquirer
+function promptUser() {
+  return inquirer
   .prompt([
     {
     message: "Enter your GitHub username:",
@@ -30,9 +33,16 @@ inquirer
     message: "Usage Instructions:"
   },
   {
-    type: "input",
+    type: "checkbox",
     name: "license",
-    message: "License:"
+    message: "Select a license: ",
+    choices: [
+      'MIT', 
+      'GNU GPLv3',
+      'Apache 2.0',
+      'ISC',
+      'Other'
+    ]
   },
   {
     type: "input",
@@ -50,24 +60,58 @@ inquirer
     message: "Questions:"
   } 
 ])
-  .then(answers => {
-   const answersArr = Object.values(answers);
-   for (var ans of answersArr) {
-     console.log(ans);
-   }
- 
-    fs.writeFile("test.txt", answersArr, function(err) {
-      if (err) {
-        console.log("Whoops, something went wrong!");
-      } else {
-        console.log("check the file");
-      }
-    })
-    });
- 
+}
 
-    
-    /* 
+function generateMD(answers) {
+  return `
+  # ${answers.title}
+
+  ${answers.description}
+
+  ## Installation 
+  
+  ${answers.installation}
+
+  ## Usage
+  
+  ${answers.usage}
+
+  ## License 
+  
+  ${answers.license}
+
+  ## Contributors 
+  
+  ${answers.contributors}
+
+  ## Tests 
+  
+  ${answers.tests}
+
+  ## Questions 
+  
+  ${answers.questions}`
+}
+
+async function init() {
+  try {
+    const answers = await promptUser();
+
+    const md = generateMD(answers);
+
+    await writeFileAsync("test.txt", md);
+
+    console.log("Successfully wrote to README.md");
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+
+init();
+
+ 
+   /*
     function({ username }) {
     const queryUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
 
