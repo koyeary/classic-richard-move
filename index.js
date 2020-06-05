@@ -6,7 +6,7 @@ const Octokat = require('octokat');
 
 
 const writeFileAsync = util.promisify(fs.writeFile);
-//const readFileAsync = util.promisify(fs.readFile);
+const readFileAsync = util.promisify(fs.readFile);
 
 function promptUser() {
   return inquirer
@@ -116,21 +116,23 @@ gitHub();
         password: "y3@Ry19520817"
       })
       const repo = octo.repos('koyeary', 'classic-richard-move');
-    //  const README = readFileAsync('README.md', 'base64');
+      let b = new Buffer("here's some words");
+      let s = b.toString("base64");
+     // const README = readFileAsync('README.md', 'base64');
 
       repo.contents('README.md').fetch() 
-      .then((info) => {
+      .then((info) => { 
         const sha = info.sha;
-        const config = {
+         const config = {
           message: 'Updating README.md File',
-          content: "testing",
+          content: s,
           encoding: "base64",
           sha: sha
-        }.then(null, (err) => console.error(err));
+        }
         repo.contents('README.md').add(config)
         .then((info) => {
-          console.log('File Updated. New sha is ', info.commit.sha)
-        })
-      }).then(null, (err) => console.error(err));
-
+          console.log('File Updated. New sha is ', info.commit.sha) 
+        }).then(null, (err) => console.error(err));
+      })
     }
+    
