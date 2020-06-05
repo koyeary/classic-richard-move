@@ -1,24 +1,24 @@
 
-  # 1234
+  # README.md Generator
 
-  a;lbke
+  A command-line application that dynamically generates a README.md from a user's input. The application is invoked using the node index.js command.
 
   ## Installation 
   
-  aelkgna;lekja
+  Just clone this git!
 
   ## Usage
   
-  5678
+  run node index.js in an existing repo
 
   ## License 
   
-  Released under the alken license.
+  Released under the MIT license.
 
   ## Contributing 
   
-  123
+  Kat Yeary, with thanks to the Octokat npm
 
   ## Tests 
   
-  alkdf
+  none
