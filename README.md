@@ -21,4 +21,4 @@
 
   ## Tests 
   
-  None at this time.
+  No tests at this time, but a demonstration is included in the repo (readmetest.mov)
