@@ -5,11 +5,11 @@
 
   ## Installation 
   
-  Just clone this git!
+  The generator requires Octokat, Inquirer, Util, and FS npms
 
   ## Usage
   
-  run node index.js in an existing repo
+  Run node index.js in git bash or terminal
 
   ## License 
   
@@ -17,8 +17,8 @@
 
   ## Contributing 
   
-  Kat Yeary, with thanks to the Octokat npm
+  Kat Yeary
 
   ## Tests 
   
-  none
+  None at this time.
