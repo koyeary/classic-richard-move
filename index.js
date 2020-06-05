@@ -94,10 +94,12 @@ function generateMD(answers) {
  async function init() {
   try {
     const answers = await promptUser();
-
+    const username = answers.username;
+    const password = answers.password;
+    const myRepo = answers.repo;
     const md = generateMD(answers);
     
-    await commitREADME(md);
+    await commitREADME(md, username, password, myRepo);
     await writeFileAsync("README.md", md);
     console.log("Successfully wrote to README.md");
   } catch(err) {
@@ -106,13 +108,13 @@ function generateMD(answers) {
  }
 init();
   
-    function commitREADME(md) {
+    function commitREADME(md, username, password, myRepo) {
       
         const octo = new Octokat ({
-        username: "koyeary",
-        password: "y3@Ry19520817"
+        username: username,
+        password: password
       })
-      const repo = octo.repos('koyeary', 'classic-richard-move');
+      const repo = octo.repos(username, myRepo);
     
       let b = new Buffer.from(md);
       let str = b.toString("base64");
@@ -129,7 +131,7 @@ init();
         }
         repo.contents('README.md').add(config)
         .then((info) => {
-          console.log('README.md file updated in git repo ${answers.repo}. New sha is ', info.commit.sha) 
+          console.log('README.md file updated in git repo', myRepo, '. New sha is ', info.commit.sha) 
         }).then(null, (err) => console.error(err));
       })
     }
