@@ -2,64 +2,65 @@ const fs = require('fs');
 //const axios = require('axios');
 const inquirer = require('inquirer');
 const util = require('util');
+const Octokat = require('octokat');
+
 
 const writeFileAsync = util.promisify(fs.writeFile);
+//const readFileAsync = util.promisify(fs.readFile);
 
 function promptUser() {
   return inquirer
-  .prompt([
-    {
-    message: "Enter your GitHub username:",
-    name: "username"
-  },
-  {
-    type: "input",
-    name: "title",
-    message: "Enter the title of your project:"
-  }, 
-  {
-    type: "input",
-    name: "description",
-    message: "Enter a project description:"
-  },
-  {
-    type: "input",
-    name: "installation",
-    message: "Installation Instructions:"
-  },
-  {
-    type: "input",
-    name: "usage",
-    message: "Usage Instructions:"
-  },
-  {
-    type: "checkbox",
-    name: "license",
-    message: "Select a license: ",
-    choices: [
-      'MIT', 
-      'GNU GPLv3',
-      'Apache 2.0',
-      'ISC',
-      'Other'
-    ]
-  },
-  {
-    type: "input",
-    name: "contributors",
-    message: "Contributors:"
-  },
-  {
-    type: "input",
-    name: "tests",
-    message: "Tests:"
-  },
-  {
-    type: "input",
-    name: "questions",
-    message: "Questions:"
-  } 
-])
+    .prompt([
+      {
+        name: "username",
+        message: "Enter your GitHub username:"
+
+      },
+      {
+        type: "password",
+        name: "password",
+        message: "Enter your GitHub password:"
+      },
+      {
+        message: "Enter the name of the the project's GitHub repo:",
+        name: "repo"
+      },
+      {
+        type: "input",
+        name: "title",
+        message: "Enter the title of your project:"
+      },
+      {
+        type: "input",
+        name: "description",
+        message: "Enter a project description:"
+      },
+      {
+        type: "input",
+        name: "installation",
+        message: "Installation Instructions:"
+      },
+      {
+        type: "input",
+        name: "usage",
+        message: "Usage Instructions:"
+      },
+      {
+        type: "input",
+        name: "license",
+        message: "License:",
+      },
+      {
+        type: "input",
+        name: "contributing",
+        message: "Contributing:"
+      },
+      {
+        type: "input",
+        name: "tests",
+        message: "Tests:"
+      }
+    ])
 }
 
 function generateMD(answers) {
@@ -78,64 +79,58 @@ function generateMD(answers) {
 
   ## License 
   
-  ${answers.license}
+  Released under the ${answers.license} license.
 
-  ## Contributors 
+  ## Contributing 
   
-  ${answers.contributors}
+  ${answers.contributing}
 
   ## Tests 
   
-  ${answers.tests}
+  ${answers.tests}`
 
-  ## Questions 
-  
-  ${answers.questions}`
 }
 
-async function init() {
+/* async function init() {
   try {
     const answers = await promptUser();
 
     const md = generateMD(answers);
 
     await writeFileAsync("test.txt", md);
-
     console.log("Successfully wrote to README.md");
   } catch(err) {
     console.log(err);
   }
 }
+ */
 
+//init();
+gitHub();
 
-init();
+   
+    function gitHub() {
 
- 
-   /*
-    function({ username }) {
-    const queryUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
-
-    axios.get(queryUrl).then(function(res) {
-      const repoNames = res.data.map(function(repo) {
-        return repo.name;
-      });
-
-      const repoNamesStr = repoNames.join("\n");
-
-      fs.writeFile("repos.txt", repoNamesStr, function(err) {
-        if (err) {
-          throw err;
-        }
-
-        console.log(`Saved ${repoNames.length} repos`);
-      });
-      fs.appendFile("repos.txt", "title", function(err) {
-        if (err) {
-          throw err
-        }
-        
-        console.log("success");
+        const octo = new Octokat ({
+        username: "koyeary",
+        password: "y3@Ry19520817"
       })
-    });
-  }); */
+      const repo = octo.repos('koyeary', 'classic-richard-move');
+    //  const README = readFileAsync('README.md', 'base64');
 
+      repo.contents('README.md').fetch() 
+      .then((info) => {
+        const sha = info.sha;
+        const config = {
+          message: 'Updating README.md File',
+          content: "testing",
+          encoding: "base64",
+          sha: sha
+        }.then(null, (err) => console.error(err));
+        repo.contents('README.md').add(config)
+        .then((info) => {
+          console.log('File Updated. New sha is ', info.commit.sha)
+        })
+      }).then(null, (err) => console.error(err));
+
+    }
