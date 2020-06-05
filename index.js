@@ -2,11 +2,8 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const util = require('util');
 const Octokat = require('octokat');
-//const template = require('./template.js');
-
-
 const writeFileAsync = util.promisify(fs.writeFile);
-const readFileAsync = util.promisify(fs.readFile);
+
 
  function promptUser() {
   return inquirer
@@ -63,6 +60,7 @@ const readFileAsync = util.promisify(fs.readFile);
     ])
 }
 
+//generateMD is the template for creating the README.md doc
 function generateMD(answers) {
   return `
   # ${answers.title}
@@ -99,7 +97,7 @@ function generateMD(answers) {
     const myRepo = answers.repo;
     const md = generateMD(answers);
     
-    await commitREADME(md, username, password, myRepo);
+    await gitCommit(md, username, password, myRepo);
     await writeFileAsync("README.md", md);
     console.log("Successfully wrote to README.md");
   } catch(err) {
@@ -107,18 +105,19 @@ function generateMD(answers) {
   } 
  }
 init();
-  
-    function commitREADME(md, username, password, myRepo) {
+
+
+//Using the Octokat npm (a useful wrapper for the GitHub API), commit the new README.md to GitHub  
+    function gitCommit(md, username, password, myRepo) {
       
         const octo = new Octokat ({
         username: username,
         password: password
       })
       const repo = octo.repos(username, myRepo);
-    
+    //Octokat requires base64 encoding, using utf8 will result in an error
       let b = new Buffer.from(md);
       let str = b.toString("base64");
-
 
       repo.contents('README.md').fetch() 
       .then((info) => { 
@@ -131,7 +130,7 @@ init();
         }
         repo.contents('README.md').add(config)
         .then((info) => {
-          console.log('README.md file updated in git repo', myRepo, '. New sha is ', info.commit.sha) 
+          console.log('README.md file updated in git repo', myRepo, '. New sha is', info.commit.sha) 
         }).then(null, (err) => console.error(err));
       })
     }

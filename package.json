@@ -1,0 +1,23 @@
+{
+  "name": "classic-richard-move",
+  "version": "1.0.0",
+  "description": "A simple command-line README.md generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koyeary/classic-richard-move.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koyeary/classic-richard-move/issues"
+  },
+  "homepage": "https://github.com/koyeary/classic-richard-move#readme",
+  "dependencies": {
+    "commonmark": "^0.29.1",
+    "octokat": "^0.10.0"
+  }
+}
